@@ -1,12 +1,14 @@
 package com.demo.query;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 import org.springframework.data.rest.core.annotation.RestResource;
 
 import java.util.List;
 
-@RepositoryRestResource(collectionResourceRel = "cards", path = "cards")
+@Profile("query")
+@RepositoryRestResource(collectionResourceRel = "cards", path = "querycards")
 interface GiftCardRepository extends JpaRepository<GiftCardEntity, String> {
 
     @RestResource(exported = false)

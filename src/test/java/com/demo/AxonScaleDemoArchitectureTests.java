@@ -6,10 +6,12 @@ import com.tngtech.archunit.junit.ArchUnitRunner;
 import com.tngtech.archunit.lang.ArchRule;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import org.junit.runner.RunWith;
+import org.springframework.test.context.ActiveProfiles;
 
 @RunWith(ArchUnitRunner.class)
-@AnalyzeClasses(packagesOf = AxonJpaDemoArchitectureTests.class)
-public class AxonJpaDemoArchitectureTests {
+@AnalyzeClasses(packagesOf = AxonScaleDemoArchitectureTests.class)
+@ActiveProfiles(profiles = "command,query")
+public class AxonScaleDemoArchitectureTests {
 
     /**
      * Testing if the classes in "..command.. , ..query.. " packages are `package private`.

@@ -7,36 +7,40 @@ import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
 import org.axonframework.queryhandling.SubscriptionQueryResult;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.hateoas.EntityLinks;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
+import java.time.Duration;
 import java.util.UUID;
 
 /**
  * Repository REST Controller for handling 'commands' only
  * <p>
- * Sometimes you may want to write a custom handler for a specific resource. To take advantage of Spring Data REST’s settings, message converters, exception handling, and more, we use the @RepositoryRestController annotation instead of a standard Spring MVC @Controller or @RestController
  */
-@RepositoryRestController
+@Profile("command")
+@RestController
 public class AxonJpaDemoRestController {
+
+    private static final Logger log = LoggerFactory.getLogger(AxonJpaDemoRestController.class);
 
     private final CommandGateway commandGateway;
     private final QueryGateway queryGateway;
-    private final EntityLinks entityLinks;
 
 
-    public AxonJpaDemoRestController(CommandGateway commandGateway, QueryGateway queryGateway, EntityLinks entityLinks) {
+    public AxonJpaDemoRestController(CommandGateway commandGateway, QueryGateway queryGateway) {
         this.commandGateway = commandGateway;
         this.queryGateway = queryGateway;
-        this.entityLinks = entityLinks;
     }
 
-    @RequestMapping(value = "/cards", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/commandcards", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity cards(@RequestBody IssueRqst request) {
 
         final String giftCardId = UUID.randomUUID().toString();
@@ -45,8 +49,12 @@ public class AxonJpaDemoRestController {
             commandGateway.sendAndWait(new IssueCmd(giftCardId, Integer.valueOf(request.getValue())));
 
             /* Returning the first update sent to our find card query. */
-            GiftCardRecord giftCardRecord = queryResult.updates().blockFirst();
+            GiftCardRecord giftCardRecord = queryResult.updates().blockFirst(Duration.ofSeconds(5));
+
             return ResponseEntity.ok().body(giftCardRecord);
+        } catch (Exception ex) {
+            log.error("Subscribing to query error !");
         }
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
     }
 }

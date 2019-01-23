@@ -1,44 +1,44 @@
 version: '3.7'
 
 services:
-  prometheus:
-    image: prom/prometheus
-    volumes:
-      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./prometheus/alert.rules:/etc/prometheus/alert.rules
-      - prometheus-storage:/prometheus
-    command:
-      - '--config.file=/etc/prometheus/prometheus.yml'
-      - '--storage.tsdb.path=/prometheus'
-      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
-      - '--web.console.templates=/usr/share/prometheus/consoles'
-    ports:
-      - 9090:9090
-  alertmanager:
-    image: prom/alertmanager
-    ports:
-      - 9093:9093
-    volumes:
-      - ./alertmanager/alertmanager.yml:/etc/alertmanager/config.yml
-    command:
-      - '--config.file=/etc/alertmanager/config.yml'
-      - '--storage.path=/alertmanager'
-  grafana:
-    image: grafana/grafana
-    ports:
-      - 3000:3000
+  axon-scale-demo:
+    image: axon-scale-demo
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=nimda
-      - GF_USERS_ALLOW_SIGN_UP=false
-    depends_on:
-      - prometheus
-  importer:
-    image: giantswarm/tiny-tools
-    entrypoint: /bin/sh import.sh
-    working_dir: /opt/grafana-import-dashboards
+      - SPRING_PROFILES_ACTIVE=command,query
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/axon-scale-demo
+      - SPRING_DATASOURCE_USERNAME=demouser
+      - SPRING_DATASOURCE_PASSWORD=thepassword
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - AXON.AXONSERVER.SERVERS=axon-server
+    ports:
+      - 8080:8080
+    deploy:
+      replicas: 2
+  axon-server:
+    image: axoniq/axonserver
+    hostname: axon-server
+    environment:
+      - AXONSERVER_EVENTSTORE=/eventstore
+      - AXONSERVER_CONTROLDB=/controldb
     volumes:
-      - ./grafana:/opt/grafana-import-dashboards
-    depends_on:
-      - grafana
+      - axonserver-eventstore:/eventstore
+      - axonserver-controldb:/controldb
+    ports:
+      - '8024:8024'
+      - '8124:8124'
+    deploy:
+      replicas: 1
+  postgres-db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=axon-scale-demo
+      - POSTGRES_USER=demouser
+      - POSTGRES_PASSWORD=thepassword
+    volumes:
+      - postgres-datadir:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
 volumes:
-  prometheus-storage:
+  axonserver-eventstore:
+  axonserver-controldb:
+  postgres-datadir:

@@ -1,17 +1,32 @@
 version: '3.7'
 
 services:
-  myapp:
+  axon-scale-demo-command:
     image: axon-scale-demo
     environment:
-      - SPRING_PROFILES_ACTIVE=command,query
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/axon-scale-demo
+      - SPRING_PROFILES_ACTIVE=command
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db-command:5432/axon-scale-demo-command
       - SPRING_DATASOURCE_USERNAME=demouser
       - SPRING_DATASOURCE_PASSWORD=thepassword
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
       - AXON.AXONSERVER.SERVERS=axon-server
+      - SERVER_PORT=8081
     ports:
-      - 8080:8080
+      - 8081:8081
+    deploy:
+      replicas: 2
+  axon-scale-demo-query:
+    image: axon-scale-demo
+    environment:
+      - SPRING_PROFILES_ACTIVE=query
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db-query:5432/axon-scale-demo-query
+      - SPRING_DATASOURCE_USERNAME=demouser
+      - SPRING_DATASOURCE_PASSWORD=thepassword
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - AXON.AXONSERVER.SERVERS=axon-server
+      - SERVER_PORT=8082
+    ports:
+      - 8082:8082
     deploy:
       replicas: 2
   axon-server:
@@ -28,10 +43,20 @@ services:
       - '8124:8124'
     deploy:
       replicas: 1
-  postgres-db:
+  postgres-db-command:
     image: postgres
     environment:
-      - POSTGRES_DB=axon-scale-demo
+      - POSTGRES_DB=axon-scale-demo-command
+      - POSTGRES_USER=demouser
+      - POSTGRES_PASSWORD=thepassword
+    volumes:
+      - postgres-datadir:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
+  postgres-db-query:
+    image: postgres
+    environment:
+      - POSTGRES_DB=axon-scale-demo-query
       - POSTGRES_USER=demouser
       - POSTGRES_PASSWORD=thepassword
     volumes:
