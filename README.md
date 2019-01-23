@@ -1,27 +1,27 @@
 # axon-scale-demo
 
-Based on seed project `idugalic:axon-java-spring-maven-seed`
+This [Axon](https://axoniq.io/) **demo project** demonstrates two different deployment strategies:
+ - monolithic (both Spring profiles `command` and `query` are activated within one application/service, the final result is one application/service running: `axon-scale-demo`)
+ - microservices (only one Spring profile is activated per application/service, the final result are two applications/services running: `axon-scale-demo-command` and `axon-scale-demo-command`)
 
-This [Axon](https://axoniq.io/) **demo project** demonstrates different deployment strategies.
-It is a Spring Boot application that uses two Spring profiles to separate application on `command` and `query` side.
+with two different versions:
+ - [non-cluster version](#non-cluster-version) (on local host) and/or 
+ - [cluster version](#cluster-version-kubernetes) (to local Kubernetes cluster)
+ 
 
-## Development
-
-This project is driven using [maven].
-
-### 1. Run locally
+## Non-Cluster version
 
 This scenario covers running of Spring Boot application/s directly on the host machine. There is no cluster, and only one instance of the application/service is running at the same time.
 
 There are two deployment strategies:
- - [monolithic version](#12-run-monolithic-version)
- - [microservices version](#13-run-microservices-version)
+ - [monolithic version](#run-monolithic-version)
+ - [microservices version](#run-microservices-version)
 
-#### 1.1 Run Axon Server
+### Run Axon Server
 
 You can [download](https://download.axoniq.io/axonserver/AxonServer.zip) a ZIP file with AxonServer as a standalone JAR. This will also give you the AxonServer CLI and information on how to run and configure the server.
 
-#### 1.2 Run monolithic version
+### Run monolithic version
 
 `command` and `query` Spring profiles are activated, grouping command and query components into one monolithic application.
 
@@ -40,7 +40,7 @@ $ curl http://localhost:8080/querycards
 
 > We use H2 SQL database. Web console is enabled, and it should be available on `/h2-console` URL (eg. `http://localhost:8080/h2-console`). Datasource URL: `jdbc:h2:mem:axon-scale-demo-command,query`
 
-#### 1.3 Run microservices version
+### Run microservices version
 
 `command` and `query` services/applications are separately deployed. Each service activated appropriate Spring profile (`command` or `query`).
 
@@ -65,26 +65,26 @@ $ curl http://localhost:8082/querycards
 ```
 
 
-### 2 Run/Deploy to local Kubernetes cluster
+## Cluster version (Kubernetes)
 
 This scenario covers deployment of our containerized (Docker) applications/services to the Kubernetes cluster, so we can scale services better.
 
 
 There are two deployment strategies:
- - [monolithic version](#221-deploy-monolithic-version)
- - [microservices version](#222-deploy-microservices-version)
+ - [monolithic version](#deploy-monolithic-version)
+ - [microservices version](#deploy-microservices-version)
 
-#### 2.1 Build the Docker image
+### Build the Docker image
 
-Build the application image with [Jib](https://github.com/GoogleContainerTools/jib) directly to a Docker daemon. This uses the `docker` command line tool and requires that you have docker available on your PATH.
+Build the application image with [Jib](https://github.com/GoogleContainerTools/jib) directly to a Docker daemon. 'Jib' uses the `docker` command line tool and requires that you have docker available on your PATH.
 
 ```
 $ ./mvnw compile jib:dockerBuild -Dimage=axon-scale-demo
 ```
 
-> Jib separates your application into multiple layers, splitting dependencies from classes. Now you don’t have to wait for Docker to rebuild your entire Java application - just deploy the layers that changed.
+> 'Jib' separates your application into multiple layers, splitting dependencies from classes. Now you don’t have to wait for Docker to rebuild your entire Java application - just deploy the layers that changed.
 
-#### 2.2 Deploy Docker stack to Kubernetes
+### Deploy Docker stack to Kubernetes
 
 You typically use docker-compose for local development because it can build and works only on a single docker engine. Docker stack and docker service commands require a `Docker Swarm (configured by defaut)` or `Kubernetes cluster`, and they are step towards production.
 
@@ -92,19 +92,20 @@ You typically use docker-compose for local development because it can build and 
 
 Now, we can use Docker Compose file and native Docker API for [`stacks`](https://docs.docker.com/engine/reference/commandline/stack/) to manage applications/services on local Kubernetes cluster.
 
-##### 2.2.1 Deploy monolithic version
+#### Deploy monolithic version
 `command` and `query` Spring profiles are activated, grouping command and query components into one [monolithic application](docker-compose.monolith.yml).
 ```
 $ docker stack deploy --orchestrator=kubernetes -c docker-compose.monolith.yml axon-sacle-demo-stack
 ```
-
-##### 2.2.2 Deploy microservices version
+![Monolith on cluster](monolith-cluster.png)
+#### Deploy microservices version
 `command` and `query` services/applications are separately deployed. [Each service](docker-compose.microservices.yml) is activating appropriate Spring profile (`command` or `query`).
 ```
 $ docker stack deploy --orchestrator=kubernetes -c docker-compose.microservices.yml axon-sacle-demo-stack
 ```
+![Microservices on cluster](microservices-cluster.png)
 
-#### 2.3 Kubernetes Web UI (Dashboard)
+### Kubernetes Web UI (Dashboard)
 
 Dashboard is a web-based Kubernetes user interface. You can use Dashboard to deploy containerized applications to a Kubernetes cluster, troubleshoot your containerized application, and manage the cluster resources.
 
@@ -119,7 +120,38 @@ $ kubectl proxy
 ```
 Kubectl will make Dashboard available at [http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy](http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy)
 
-#### 2.4 Verify
+![Kubernetes UI](kubernetes.png)
+
+### Kubernetes persistent volumes
+
+There are several different types of volumes that are handled by Compose for Kubernetes.
+
+The following Compose snippet declares a service that uses a persistent volume:
+```yaml
+services:
+  axon-server:
+    image: axoniq/axonserver
+    hostname: axon-server
+    environment:
+      - AXONSERVER_EVENTSTORE=/eventstore
+      - AXONSERVER_CONTROLDB=/controldb
+    volumes:
+      - axonserver-eventstore:/eventstore
+      - axonserver-controldb:/controldb
+    ports:
+      - '8024:8024'
+      - '8124:8124'
+volumes:
+  axonserver-eventstore:
+  axonserver-controldb:
+```
+
+A [persistentVolumeClaim]((https://kubernetes.io/docs/concepts/storage/persistent-volumes/)) volume is used to mount a PersistentVolume into a Pod. PersistentVolumes are a way for users to “claim” durable storage (such as a GCE PersistentDisk or an iSCSI volume) without knowing the details of the particular cloud environment.
+
+> This demo is focusing on scaling axon (spring boot) application/s itself. Infrastructure components like AxonServer and Postgres are not in the focus.
+Nevertheless it is fair to say that the data that this components collect is saved in a durable way via `PersistentVolume`s keeping us closer to Production.
+
+### Verify
 
 ```
 $ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'http://localhost:8081/commandcards'
@@ -128,13 +160,13 @@ $ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'ht
 $ curl http://localhost:8082/querycards
 ```
 
-#### Remove Docker stack
+### Remove Docker stack
 ```
 $ docker stack rm --orchestrator=kubernetes axon-sacle-demo-stack
 ```
 
 
-### Run tests
+## Run tests
 
 This project comes with some rudimentary tests as a good starting
 point for writing your own. Use the following command to execute the
@@ -144,6 +176,10 @@ tests using Maven:
 $ ./mvnw test
 ```
 
+## References and further reading
+
+- [https://docs.axoniq.io/reference-guide](https://docs.axoniq.io/reference-guide/)
+- [https://blog.docker.com/2018/12/simplifying-kubernetes-with-docker-compose-and-friends](https://blog.docker.com/2018/12/simplifying-kubernetes-with-docker-compose-and-friends/)
 ---
 
 [maven]: https://maven.apache.org/ (Maven)

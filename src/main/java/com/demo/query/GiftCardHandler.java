@@ -3,6 +3,7 @@ package com.demo.query;
 import com.demo.api.FindGiftCardQry;
 import com.demo.api.GiftCardRecord;
 import com.demo.api.IssuedEvt;
+import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
 import org.axonframework.queryhandling.QueryHandler;
 import org.axonframework.queryhandling.QueryUpdateEmitter;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Component;
 import java.util.Objects;
 
 @Profile("query")
+@ProcessingGroup("giftcardprocessor")
 @Component
 class GiftCardHandler {
 
