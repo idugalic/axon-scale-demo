@@ -93,9 +93,28 @@ You typically use docker-compose for local development because it can build and 
 Now, we can use Docker Compose file and native Docker API for [`stacks`](https://docs.docker.com/engine/reference/commandline/stack/) to manage applications/services on local Kubernetes cluster.
 
 #### Deploy monolithic version
+
 `command` and `query` Spring profiles are activated, grouping command and query components into one [monolithic application](docker-compose.monolith.yml).
 ```
 $ docker stack deploy --orchestrator=kubernetes -c docker-compose.monolith.yml axon-sacle-demo-stack
+```
+When you scale an application, you increase or decrease the number of replicas (we set 2). Each replica of your application represents a Kubernetes Pod that encapsulates your application's container(s).
+
+```yaml
+services:  
+  axon-scale-demo:
+    image: axon-scale-demo
+    environment:
+      - SPRING_PROFILES_ACTIVE=command,query
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/axon-scale-demo
+      - SPRING_DATASOURCE_USERNAME=demouser
+      - SPRING_DATASOURCE_PASSWORD=thepassword
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - AXON.AXONSERVER.SERVERS=axon-server
+    ports:
+      - 8080:8080
+    deploy:
+      replicas: 2
 ```
 ![Monolith on cluster](monolith-cluster.png)
 
@@ -108,9 +127,43 @@ $ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'ht
 $ curl http://localhost:8080/querycards
 ```
 #### Deploy microservices version
+
 `command` and `query` services/applications are separately deployed. [Each service](docker-compose.microservices.yml) is activating appropriate Spring profile (`command` or `query`).
 ```
 $ docker stack deploy --orchestrator=kubernetes -c docker-compose.microservices.yml axon-sacle-demo-stack
+```
+When you scale an application, you increase or decrease the number of replicas (we set 2). Each replica of your application represents a Kubernetes Pod that encapsulates your application's container(s).
+
+```yaml
+services:
+  axon-scale-demo-command:
+    image: axon-scale-demo
+    environment:
+      - SPRING_PROFILES_ACTIVE=command
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db-command:5432/axon-scale-demo-command
+      - SPRING_DATASOURCE_USERNAME=demouser
+      - SPRING_DATASOURCE_PASSWORD=thepassword
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - AXON.AXONSERVER.SERVERS=axon-server
+      - SERVER_PORT=8081
+    ports:
+      - 8081:8081
+    deploy:
+      replicas: 2
+  axon-scale-demo-query:
+    image: axon-scale-demo
+    environment:
+      - SPRING_PROFILES_ACTIVE=query
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db-query:5432/axon-scale-demo-query
+      - SPRING_DATASOURCE_USERNAME=demouser
+      - SPRING_DATASOURCE_PASSWORD=thepassword
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - AXON.AXONSERVER.SERVERS=axon-server
+      - SERVER_PORT=8082
+    ports:
+      - 8082:8082
+    deploy:
+      replicas: 2
 ```
 ![Microservices on cluster](microservices-cluster.png)
 
