@@ -98,12 +98,30 @@ Now, we can use Docker Compose file and native Docker API for [`stacks`](https:/
 $ docker stack deploy --orchestrator=kubernetes -c docker-compose.monolith.yml axon-sacle-demo-stack
 ```
 ![Monolith on cluster](monolith-cluster.png)
+
+**Verify**
+
+```
+$ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'http://localhost:8080/commandcards'
+```
+```
+$ curl http://localhost:8080/querycards
+```
 #### Deploy microservices version
 `command` and `query` services/applications are separately deployed. [Each service](docker-compose.microservices.yml) is activating appropriate Spring profile (`command` or `query`).
 ```
 $ docker stack deploy --orchestrator=kubernetes -c docker-compose.microservices.yml axon-sacle-demo-stack
 ```
 ![Microservices on cluster](microservices-cluster.png)
+
+**Verify**
+
+```
+$ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'http://localhost:8081/commandcards'
+```
+```
+$ curl http://localhost:8082/querycards
+```
 
 ### Kubernetes Web UI (Dashboard)
 
@@ -151,14 +169,6 @@ A [persistentVolumeClaim]((https://kubernetes.io/docs/concepts/storage/persisten
 > This demo is focusing on scaling axon (spring boot) application/s itself. Infrastructure components like AxonServer and Postgres are not in the focus.
 Nevertheless it is fair to say that the data that this components collect is saved in a durable way via `PersistentVolume`s keeping us closer to Production.
 
-### Verify
-
-```
-$ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'http://localhost:8081/commandcards'
-```
-```
-$ curl http://localhost:8082/querycards
-```
 
 ### Remove Docker stack
 ```
