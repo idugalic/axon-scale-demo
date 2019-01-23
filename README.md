@@ -1,13 +1,15 @@
 # axon-scale-demo
 
 This [Axon](https://axoniq.io/) **demo project** demonstrates two different deployment strategies:
- - monolithic (both Spring profiles `command` and `query` are activated within one application/service, the final result is one application/service running: `axon-scale-demo`)
- - microservices (only one Spring profile is activated per application/service, the final result are two applications/services running: `axon-scale-demo-command` and `axon-scale-demo-command`)
+ - monolithic (both Spring profiles `command`(**C**QRS) and `query`(C**Q**RS) are activated within one application/service, the final result is one application/service running: `axon-scale-demo`)
+ - microservices (only one Spring profile is activated per application/service (`command` or `query`), the final result are two applications/services running: `axon-scale-demo-command` and `axon-scale-demo-command`)
 
 with two different versions:
  - [non-cluster version](#non-cluster-version) (on local host) and/or 
  - [cluster version](#cluster-version-kubernetes) (to local Kubernetes cluster)
  
+> Spring profiles are used to separate `command` from `query` components in a simple way, for demo purposes.
+In real world scenarios you would split your code in more (maven) modules, or in more dedicated git repositories.
 
 ## Non-Cluster version
 
@@ -30,6 +32,8 @@ You can run the following command to start monolithic version locally:
 $ ./mvnw spring-boot:run -Dspring.profiles.active=command,query
 ```
 
+> We use H2 SQL database. Web console is enabled, and it should be available on `/h2-console` URL (eg. `http://localhost:8080/h2-console`). Datasource URL: `jdbc:h2:mem:axon-scale-demo-command,query`
+
 **Verify**:
 ```
 $ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'http://localhost:8080/commandcards'
@@ -38,7 +42,7 @@ $ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'ht
 $ curl http://localhost:8080/querycards
 ```
 
-> We use H2 SQL database. Web console is enabled, and it should be available on `/h2-console` URL (eg. `http://localhost:8080/h2-console`). Datasource URL: `jdbc:h2:mem:axon-scale-demo-command,query`
+> Axon Server dashboard is available here [http://localhost:8024/](http://localhost:8024/)
 
 ### Run microservices version
 
@@ -64,6 +68,7 @@ $ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'ht
 $ curl http://localhost:8082/querycards
 ```
 
+> Axon Server dashboard is available here [http://localhost:8024/](http://localhost:8024/)
 
 ## Cluster version (Kubernetes)
 
@@ -126,6 +131,8 @@ $ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'ht
 ```
 $ curl http://localhost:8080/querycards
 ```
+> Axon Server dashboard is available here [http://localhost:8024/](http://localhost:8024/)
+
 #### Deploy microservices version
 
 `command` and `query` services/applications are separately deployed. [Each service](docker-compose.microservices.yml) is activating appropriate Spring profile (`command` or `query`).
@@ -175,6 +182,7 @@ $ curl -i -X POST -H 'Content-Type:application/json' -d '{"value" : "1000"}' 'ht
 ```
 $ curl http://localhost:8082/querycards
 ```
+> Axon Server dashboard is available here [http://localhost:8024/](http://localhost:8024/)
 
 ### Kubernetes Web UI (Dashboard)
 
