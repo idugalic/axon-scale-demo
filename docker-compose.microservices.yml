@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  myapp:
+    image: axon-scale-demo
+    environment:
+      - SPRING_PROFILES_ACTIVE=command,query
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres-db:5432/axon-scale-demo
+      - SPRING_DATASOURCE_USERNAME=demouser
+      - SPRING_DATASOURCE_PASSWORD=thepassword
+      - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
+      - AXON.AXONSERVER.SERVERS=axon-server
+    ports:
+      - 8080:8080
+    deploy:
+      replicas: 2
+  axon-server:
+    image: axoniq/axonserver
+    hostname: axon-server
+    environment:
+      - AXONSERVER_EVENTSTORE=/eventstore
+      - AXONSERVER_CONTROLDB=/controldb
+    volumes:
+      - axonserver-eventstore:/eventstore
+      - axonserver-controldb:/controldb
+    ports:
+      - '8024:8024'
+      - '8124:8124'
+    deploy:
+      replicas: 1
+  postgres-db:
+    image: postgres
+    environment:
+      - POSTGRES_DB=axon-scale-demo
+      - POSTGRES_USER=demouser
+      - POSTGRES_PASSWORD=thepassword
+    volumes:
+      - postgres-datadir:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
+volumes:
+  axonserver-eventstore:
+  axonserver-controldb:
+  postgres-datadir:
