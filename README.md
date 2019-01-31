@@ -1,4 +1,4 @@
-# axon-scale-demo
+# [projects](http://idugalic.github.io/projects)/axon-scale-demo
 
 This [Axon](https://axoniq.io/) **demo project** demonstrates two different deployment strategies:
  - monolithic (both Spring profiles `command`(**C**QRS) and `query`(C**Q**RS) are activated within one application/service, the final result is one application/service running: `axon-scale-demo`)
