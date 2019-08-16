@@ -101,7 +101,7 @@ Now, we can use Docker Compose file and native Docker API for [`stacks`](https:/
 
 `command` and `query` Spring profiles are activated, grouping command and query components into one [monolithic application](docker-compose.monolith.yml).
 ```
-$ docker stack deploy --orchestrator=kubernetes -c docker-compose.monolith.yml axon-sacle-demo-stack
+$ docker stack deploy --orchestrator=kubernetes -c docker-compose.monolith.yml axon-scale-demo-stack
 ```
 When you scale an application, you increase or decrease the number of replicas (we set 2). Each replica of your application represents a Kubernetes Pod that encapsulates your application's container(s).
 
@@ -137,7 +137,7 @@ $ curl http://localhost:8080/querycards
 
 `command` and `query` services/applications are separately deployed. [Each service](docker-compose.microservices.yml) is activating appropriate Spring profile (`command` or `query`).
 ```
-$ docker stack deploy --orchestrator=kubernetes -c docker-compose.microservices.yml axon-sacle-demo-stack
+$ docker stack deploy --orchestrator=kubernetes -c docker-compose.microservices.yml axon-scale-demo-stack
 ```
 When you scale an application, you increase or decrease the number of replicas (we set 2). Each replica of your application represents a Kubernetes Pod that encapsulates your application's container(s).
 
@@ -151,7 +151,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=demouser
       - SPRING_DATASOURCE_PASSWORD=thepassword
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
-      - AXON.AXONSERVER.SERVERS=axon-server
+      - AXON_AXONSERVER_SERVERS=axon-server
       - SERVER_PORT=8081
     ports:
       - 8081:8081
@@ -165,7 +165,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=demouser
       - SPRING_DATASOURCE_PASSWORD=thepassword
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
-      - AXON.AXONSERVER.SERVERS=axon-server
+      - AXON_AXONSERVER_SERVERS=axon-server
       - SERVER_PORT=8082
     ports:
       - 8082:8082
@@ -184,22 +184,11 @@ $ curl http://localhost:8082/querycards
 ```
 > Axon Server dashboard is available here [http://localhost:8024/](http://localhost:8024/)
 
-### Kubernetes Web UI (Dashboard)
-
-Dashboard is a web-based Kubernetes user interface. You can use Dashboard to deploy containerized applications to a Kubernetes cluster, troubleshoot your containerized application, and manage the cluster resources.
-
-The Dashboard UI is not deployed by default. To deploy it, run the following command:
+Feel free to use `kubectl` CLI to explore your Kubernetes cluster:
 ```
-$ kubectl create -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended/kubernetes-dashboard.yaml
+$ kubectl get all
+```
 
-```
-You can access Dashboard by running the following command:
-```
-$ kubectl proxy
-```
-Kubectl will make Dashboard available at [http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy](http://localhost:8001/api/v1/namespaces/kube-system/services/kubernetes-dashboard/proxy)
-
-![Kubernetes UI](kubernetes.png)
 
 ### Kubernetes persistent volumes
 
@@ -233,7 +222,7 @@ Nevertheless it is fair to say that the data that this components collect is sav
 
 ### Remove Docker stack
 ```
-$ docker stack rm --orchestrator=kubernetes axon-sacle-demo-stack
+$ docker stack rm --orchestrator=kubernetes axon-scale-demo-stack
 ```
 
 

@@ -9,7 +9,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=demouser
       - SPRING_DATASOURCE_PASSWORD=thepassword
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
-      - AXON.AXONSERVER.SERVERS=axon-server
+      - AXON_AXONSERVER_SERVERS=axon-server
       - SERVER_PORT=8081
     ports:
       - 8081:8081
@@ -23,7 +23,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=demouser
       - SPRING_DATASOURCE_PASSWORD=thepassword
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
-      - AXON.AXONSERVER.SERVERS=axon-server
+      - AXON_AXONSERVER_SERVERS=axon-server
       - SERVER_PORT=8082
     ports:
       - 8082:8082

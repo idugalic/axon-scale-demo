@@ -4,17 +4,17 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
 <modelVersion>4.0.0</modelVersion>
 
 <groupId>com.demo</groupId>
-<artifactId>axon-jpa-demo</artifactId>
+<artifactId>axon-scale-demo</artifactId>
 <version>0.1.0-SNAPSHOT</version>
 <packaging>jar</packaging>
 
-<name>axon-jpa-demo</name>
-<description>axon-jpa-demo</description>
+<name>axon-scale-demo</name>
+<description>axon demo project</description>
 
 <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.1.RELEASE</version>
+    <version>2.1.7.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
 </parent>
 
@@ -44,7 +44,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
         <groupId>org.axonframework</groupId>
         <artifactId>axon-spring-boot-starter</artifactId>
-        <version>4.0.3</version>
+        <version>4.2</version>
     </dependency>
     <dependency>
         <groupId>com.h2database</groupId>
@@ -66,7 +66,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
         <groupId>org.axonframework</groupId>
         <artifactId>axon-test</artifactId>
-        <version>4.0.3</version>
+        <version>4.2</version>
         <scope>test</scope>
     </dependency>
     <dependency>
