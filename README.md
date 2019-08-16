@@ -115,7 +115,7 @@ services:
       - SPRING_DATASOURCE_USERNAME=demouser
       - SPRING_DATASOURCE_PASSWORD=thepassword
       - SPRING_JPA_PROPERTIES_HIBERNATE_DIALECT=org.hibernate.dialect.PostgreSQLDialect
-      - AXON.AXONSERVER.SERVERS=axon-server
+      - AXON_AXONSERVER_SERVERS=axon-server
     ports:
       - 8080:8080
     deploy:
