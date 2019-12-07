@@ -12,7 +12,7 @@
   * [Deploy to Kubernetes with `kubectl` and `skaffold`](#deploy-to-kubernetes-with-kubectl-and-skaffold)
     + [Continuously deploy monolithic version with `skaffold`](#continuously-deploy-monolithic-version-with-skaffold)
     + [Continuously deploy microservices version with `skaffold`](#continuously-deploy-microservices-version-with-skaffold)
-    + [Deploy with `kubectl`](/.k8s/README.md)
+    + [Deploy with `kubectl`](https://github.com/idugalic/axon-scale-demo/blob/master/.k8s/README.md)
     
 This [Axon](https://axoniq.io/) **demo project** demonstrates two different deployment strategies:
  - monolithic (both Spring profiles `command`(**C**QRS) and `query`(C**Q**RS) are activated within one application/service, the final result is one application/service running: `axon-scale-demo`)
