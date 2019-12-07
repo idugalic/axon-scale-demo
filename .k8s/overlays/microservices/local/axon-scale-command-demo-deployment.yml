@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axon-scale-command-demo # necessary for Kustomize identification
+spec:
+  template:
+    spec:
+      containers:
+        - image: axon-scale-demo:latest
+          name: axon-scale-demo
+          imagePullPolicy: Never # Changing the imagePullPolicy to `Never`
+

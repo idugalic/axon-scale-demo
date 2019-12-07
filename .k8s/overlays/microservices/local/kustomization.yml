@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+bases:
+  - ../../../base/microservices # relative path to the base folder
+
+patchesStrategicMerge:
+  - axon-scale-command-demo-deployment.yml
+  - axon-scale-command-demo-services.yml
+  - axon-scale-query-demo-deployment.yml
+  - axon-scale-query-demo-services.yml

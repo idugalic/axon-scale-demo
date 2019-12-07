@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-command-demo
+spec:
+  serviceName: postgres-command
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-command
+  template:
+    metadata:
+      labels:
+        app: postgres-command
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          envFrom:
+            - configMapRef:
+                name: postgres-command-config-demo
+          ports:
+            - containerPort: 5432
+              name: postgrescmddb
+
+

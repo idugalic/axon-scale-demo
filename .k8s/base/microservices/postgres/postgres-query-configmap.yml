@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-query-config-demo
+  labels:
+    app: postgres-query
+data:
+  POSTGRES_DB: axon-scale-demo
+  POSTGRES_USER: demouser
+  POSTGRES_PASSWORD: thepassword

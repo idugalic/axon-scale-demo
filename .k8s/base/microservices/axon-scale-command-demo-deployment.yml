@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: axon-scale-command-demo
+  name: axon-scale-command-demo
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: axon-scale-command-demo
+  template:
+    metadata:
+      labels:
+        app: axon-scale-command-demo
+    spec:
+      containers:
+        - image: axon-scale-demo:latest
+          name: axon-scale-demo
+          imagePullPolicy: IfNotPresent
+          envFrom:
+            - configMapRef:
+                name: axon-scale-command-demo-config
+          readinessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 5
+            timeoutSeconds: 1
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8081
+            initialDelaySeconds: 15
+            timeoutSeconds: 1
+            periodSeconds: 15
+

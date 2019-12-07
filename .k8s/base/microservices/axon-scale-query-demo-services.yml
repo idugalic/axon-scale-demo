@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: axon-scale-query-demo
+  name: axon-scale-query-demo
+spec:
+  ports:
+  - name: 8082-8082
+    port: 8082
+    protocol: TCP
+    targetPort: 8082
+  selector:
+    app: axon-scale-query-demo
+  type: ClusterIP

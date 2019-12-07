@@ -11,6 +11,7 @@
     + [Remove Docker stack](#remove-docker-stack)
   * [Deploy to Kubernetes with `kubectl` and `skaffold`](#deploy-to-kubernetes-with-kubectl-and-skaffold)
     + [Continuously deploy monolithic version](#continuously-deploy-monolithic-version)
+    + [Continuously deploy microservices version](#continuously-deploy-microservices-version)
     
 This [Axon](https://axoniq.io/) **demo project** demonstrates two different deployment strategies:
  - monolithic (both Spring profiles `command`(**C**QRS) and `query`(C**Q**RS) are activated within one application/service, the final result is one application/service running: `axon-scale-demo`)
@@ -253,10 +254,23 @@ Use `skaffold run` to build and deploy your app once, similar to a CI/CD pipelin
 $ skaffold run
 ```
 
-The skaffold debug command runs your application with a continuous build and deploy loop, and forwards any required debugging ports to your local machine.
+#### Continuously deploy microservices version
+
+Use `skaffold dev` to build and deploy your apps every time your code changes:
+```bash
+$ skaffold dev -p microservices
+```
+
+Use `skaffold run` to build and deploy your apps once, similar to a CI/CD pipeline:
+```bash
+$ skaffold run -p microservices
+```
+
+The `skaffold debug` command runs your application with a continuous build and deploy loop, and forwards any required debugging ports to your local machine.
 This allows Skaffold to automatically attach a debugger to your running application.
+
 Skaffold also takes care of any configuration changes dynamically, giving you a simple yet powerful tool for developing Kubernetes-native applications.
-Skaffold debug powers the debugging features in [Cloud Code](https://cloud.google.com/code/) for IntelliJ and Cloud Code for Visual Studio Code.
+'Skaffold debug' powers the debugging features in [Cloud Code](https://cloud.google.com/code/) for IntelliJ and Cloud Code for Visual Studio Code.
 
 >If you don't like `skaffold`, you can use `kubectl` directly.
 Please follow the instructions [here](/.k8s/README.md).
@@ -276,6 +290,9 @@ $ ./mvnw test
 
 - [https://docs.axoniq.io/reference-guide](https://docs.axoniq.io/reference-guide/)
 - [https://blog.docker.com/2018/12/simplifying-kubernetes-with-docker-compose-and-friends](https://blog.docker.com/2018/12/simplifying-kubernetes-with-docker-compose-and-friends/)
+- [https://skaffold.dev/docs](https://skaffold.dev/docs/)
+- [https://spring.io/guides/gs/spring-boot-kubernetes](https://spring.io/guides/gs/spring-boot-kubernetes/)
+
 ---
 
 [maven]: https://maven.apache.org/ (Maven)

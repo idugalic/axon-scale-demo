@@ -9,3 +9,8 @@ build:
 deploy:
   kustomize:
     path: "./.k8s/overlays/monolithic/local"
+profiles:
+  - name: microservices
+    deploy:
+      kustomize:
+        path: "./.k8s/overlays/microservices/local"

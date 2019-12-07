@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres-query-demo
+spec:
+  serviceName: "postgres-query"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-query
+  template:
+    metadata:
+      labels:
+        app: postgres-query
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:latest
+          envFrom:
+            - configMapRef:
+                name: postgres-query-config-demo
+          ports:
+            - containerPort: 5432
+              name: postgrequerydb
+
+

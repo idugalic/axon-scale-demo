@@ -24,8 +24,16 @@ You can run the following command to start your application(s) on `Local` enviro
 ```bash
 kubectl apply -k .k8s/overlays/monolithics/local/
 ```
+or deploy microservices:
+```bash
+kubectl apply -k .k8s/overlays/microservices/local/
+```
 
 #### Delete `Local` environment
 ```bash
 kubectl delete -k .k8s/overlays/monolithics/local/
+```
+or
+```bash
+kubectl delete -k .k8s/overlays/microservices/local/
 ```
