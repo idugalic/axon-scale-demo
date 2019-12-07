@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - postgres/postgres-configmap.yml
+  - postgres/postgres-statefulset.yml
+  - postgres/postgres-services.yml
+  - axonserver/axonserver-statefulset.yml
+  - axonserver/axonserver-services.yml
+  - axon-scale-demo-configmap.yml
+  - axon-scale-demo-deployment.yml
+  - axon-scale-demo-services.yml
+
+
+
+

@@ -1,5 +1,17 @@
-# [projects](http://idugalic.github.io/projects)/axon-scale-demo [![Build Status](https://travis-ci.org/idugalic/axon-scale-demo.svg?branch=master)](https://travis-ci.org/idugalic/axon-scale-demo)
+# [projects](http://idugalic.github.io/projects)/axon-scale-demo
 
+- [Non-Cluster version](#non-cluster-version)
+  * [Run Axon Server](#run-axon-server)
+  * [Run monolithic version](#run-monolithic-version)
+  * [Run microservices version](#run-microservices-version)
+- [Cluster version (Kubernetes)](#cluster-version-kubernetes)
+  * [Deploy Docker stack to Kubernetes](#deploy-docker-stack-to-kubernetes)
+    + [Deploy monolithic version](#deploy-monolithic-version)
+    + [Deploy microservices version](#deploy-microservices-version)
+    + [Remove Docker stack](#remove-docker-stack)
+  * [Deploy to Kubernetes with `kubectl` and `skaffold`](#deploy-to-kubernetes-with-kubectl-and-skaffold)
+    + [Continuously deploy monolithic version](#continuously-deploy-monolithic-version)
+    
 This [Axon](https://axoniq.io/) **demo project** demonstrates two different deployment strategies:
  - monolithic (both Spring profiles `command`(**C**QRS) and `query`(C**Q**RS) are activated within one application/service, the final result is one application/service running: `axon-scale-demo`)
  - microservices (only one Spring profile is activated per application/service (`command` or `query`), the final result are two applications/services running: `axon-scale-demo-command` and `axon-scale-demo-command`)
@@ -101,7 +113,7 @@ Now, we can use Docker Compose file and native Docker API for [`stacks`](https:/
 
 `command` and `query` Spring profiles are activated, grouping command and query components into one [monolithic application](docker-compose.monolith.yml).
 ```
-$ docker stack deploy --orchestrator=kubernetes -c docker-compose.monolith.yml axon-scale-demo-stack
+$ docker stack deploy --orchestrator=kubernetes -c .docker/docker-compose.monolith.yml axon-scale-demo-stack
 ```
 When you scale an application, you increase or decrease the number of replicas (we set 2). Each replica of your application represents a Kubernetes Pod that encapsulates your application's container(s).
 
@@ -121,7 +133,7 @@ services:
     deploy:
       replicas: 2
 ```
-![Monolith on cluster](monolith-cluster.png)
+![Monolith on cluster](/.assets/monolith-cluster.png)
 
 **Verify**
 
@@ -137,7 +149,7 @@ $ curl http://localhost:8080/querycards
 
 `command` and `query` services/applications are separately deployed. [Each service](docker-compose.microservices.yml) is activating appropriate Spring profile (`command` or `query`).
 ```
-$ docker stack deploy --orchestrator=kubernetes -c docker-compose.microservices.yml axon-scale-demo-stack
+$ docker stack deploy --orchestrator=kubernetes -c .docker/docker-compose.microservices.yml axon-scale-demo-stack
 ```
 When you scale an application, you increase or decrease the number of replicas (we set 2). Each replica of your application represents a Kubernetes Pod that encapsulates your application's container(s).
 
@@ -172,7 +184,7 @@ services:
     deploy:
       replicas: 2
 ```
-![Microservices on cluster](microservices-cluster.png)
+![Microservices on cluster](/.assets/microservices-cluster.png)
 
 **Verify**
 
@@ -190,7 +202,7 @@ $ kubectl get all
 ```
 
 
-### Kubernetes persistent volumes
+#### Persistent volumes
 
 There are several different types of volumes that are handled by Compose for Kubernetes.
 
@@ -220,10 +232,34 @@ A [persistentVolumeClaim]((https://kubernetes.io/docs/concepts/storage/persisten
 Nevertheless it is fair to say that the data that this components collect is saved in a durable way via `PersistentVolume`s keeping us closer to Production.
 
 
-### Remove Docker stack
+#### Remove Docker stack
 ```
 $ docker stack rm --orchestrator=kubernetes axon-scale-demo-stack
 ```
+
+### Deploy to Kubernetes with `kubectl` and `skaffold`
+
+[Skaffold](https://github.com/GoogleContainerTools/skaffold) is a command line tool that facilitates continuous development for Kubernetes applications.
+
+#### Continuously deploy monolithic version
+
+Use `skaffold dev` to build and deploy your app every time your code changes:
+```bash
+$ skaffold dev
+```
+
+Use `skaffold run` to build and deploy your app once, similar to a CI/CD pipeline:
+```bash
+$ skaffold run
+```
+
+The skaffold debug command runs your application with a continuous build and deploy loop, and forwards any required debugging ports to your local machine.
+This allows Skaffold to automatically attach a debugger to your running application.
+Skaffold also takes care of any configuration changes dynamically, giving you a simple yet powerful tool for developing Kubernetes-native applications.
+Skaffold debug powers the debugging features in [Cloud Code](https://cloud.google.com/code/) for IntelliJ and Cloud Code for Visual Studio Code.
+
+>If you don't like `skaffold`, you can use `kubectl` directly.
+Please follow the instructions [here](/.k8s/README.md).
 
 
 ## Run tests
