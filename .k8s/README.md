@@ -22,10 +22,10 @@ $ mvn clean verify jib:dockerBuild
 
 You can run the following command to start your application(s) on `Local` environment:
 ```bash
-kubectl apply -k .k8s/overlays/local/
+kubectl apply -k .k8s/overlays/monolithics/local/
 ```
 
 #### Delete `Local` environment
 ```bash
-kubectl delete -k .k8s/overlays/local/
+kubectl delete -k .k8s/overlays/monolithics/local/
 ```

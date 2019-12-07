@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 bases:
-  - ../../base # relative path to the base folder
+  - ../../../base/monolithic # relative path to the base folder
 
 patchesStrategicMerge:
   - axon-scale-demo-deployment.yml
