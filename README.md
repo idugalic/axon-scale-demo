@@ -10,8 +10,9 @@
     + [Deploy microservices version](#deploy-microservices-version)
     + [Remove Docker stack](#remove-docker-stack)
   * [Deploy to Kubernetes with `kubectl` and `skaffold`](#deploy-to-kubernetes-with-kubectl-and-skaffold)
-    + [Continuously deploy monolithic version](#continuously-deploy-monolithic-version)
-    + [Continuously deploy microservices version](#continuously-deploy-microservices-version)
+    + [Continuously deploy monolithic version with `skaffold`](#continuously-deploy-monolithic-version-with-skaffold)
+    + [Continuously deploy microservices version with `skaffold`](#continuously-deploy-microservices-version-with-skaffold)
+    + [Deploy with `kubectl`](/.k8s/README.md)
     
 This [Axon](https://axoniq.io/) **demo project** demonstrates two different deployment strategies:
  - monolithic (both Spring profiles `command`(**C**QRS) and `query`(C**Q**RS) are activated within one application/service, the final result is one application/service running: `axon-scale-demo`)
@@ -242,7 +243,7 @@ $ docker stack rm --orchestrator=kubernetes axon-scale-demo-stack
 
 [Skaffold](https://github.com/GoogleContainerTools/skaffold) is a command line tool that facilitates continuous development for Kubernetes applications.
 
-#### Continuously deploy monolithic version
+#### Continuously deploy monolithic version with `skaffold`
 
 Use `skaffold dev` to build and deploy your app every time your code changes:
 ```bash
@@ -254,7 +255,7 @@ Use `skaffold run` to build and deploy your app once, similar to a CI/CD pipelin
 $ skaffold run
 ```
 
-#### Continuously deploy microservices version
+#### Continuously deploy microservices version with `skaffold`
 
 Use `skaffold dev` to build and deploy your apps every time your code changes:
 ```bash
