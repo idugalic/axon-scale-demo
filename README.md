@@ -43,7 +43,7 @@ You can [download](https://download.axoniq.io/axonserver/AxonServer.zip) a ZIP f
 
 You can run the following command to start monolithic version locally:
 ```
-$ ./mvnw spring-boot:run -Dspring.profiles.active=command,query
+$  ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=command,query"
 ```
 
 > We use H2 SQL database. Web console is enabled, and it should be available on `/h2-console` URL (eg. `http://localhost:8080/h2-console`). Datasource URL: `jdbc:h2:mem:axon-scale-demo-command,query`
@@ -64,8 +64,8 @@ $ curl http://localhost:8080/querycards
 
 You can run the following commands to start microservices version locally:
 ```
-$ ./mvnw spring-boot:run -Dspring.profiles.active=command -Dserver.port=8081
-$ ./mvnw spring-boot:run -Dspring.profiles.active=query -Dserver.port=8082
+$ ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=command -Dserver.port=8081"
+$ ./mvnw spring-boot:run -Dspring-boot.run.jvmArguments="-Dspring.profiles.active=query -Dserver.port=8082"
 
 ```
 
