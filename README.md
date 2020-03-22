@@ -295,6 +295,7 @@ $ ./mvnw test
 - [https://spring.io/guides/gs/spring-boot-kubernetes](https://spring.io/guides/gs/spring-boot-kubernetes/)
 
 ---
+Created with :heart: by [Ivan Dugalic](https://idugalic.github.io/)
 
 [maven]: https://maven.apache.org/ (Maven)
 [atomist]: https://www.atomist.com/ (Atomist)
