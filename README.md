@@ -1,4 +1,4 @@
-# [projects](http://idugalic.github.io/projects)/axon-scale-demo
+# [projects](http://idugalic.github.io/projects)/axon-scale-demo ![Java CI with Maven](https://github.com/idugalic/axon-scale-demo/workflows/Java%20CI%20with%20Maven/badge.svg)
 
 - [Non-Cluster version](#non-cluster-version)
   * [Run Axon Server](#run-axon-server)
