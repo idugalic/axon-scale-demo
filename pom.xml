@@ -49,7 +49,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
         <groupId>org.axonframework</groupId>
         <artifactId>axon-spring-boot-starter</artifactId>
-        <version>${axon.version}</version>
+        <version>3.3.0.RELEASE</version>
     </dependency>
     <dependency>
         <groupId>com.h2database</groupId>
@@ -59,7 +59,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
         <groupId>org.postgresql</groupId>
         <artifactId>postgresql</artifactId>
-        <version>42.2.8</version>
+        <version>42.3.9</version>
     </dependency>
     <dependency>
         <groupId>org.springframework.boot</groupId>
@@ -69,7 +69,7 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xs
     <dependency>
         <groupId>org.axonframework</groupId>
         <artifactId>axon-test</artifactId>
-        <version>${axon.version}</version>
+        <version>4.2</version>
         <scope>test</scope>
     </dependency>
     <dependency>
